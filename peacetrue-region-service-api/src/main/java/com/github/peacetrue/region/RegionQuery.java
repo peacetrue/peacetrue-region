@@ -27,7 +27,6 @@ public class RegionQuery extends OperatorCapableImpl<String> {
     private String name;
     /** 上一级主键 */
     private Long parentId;
-    private Range.Date createdTime;
 
     public RegionQuery(Long[] id) {
         this.id = id;
