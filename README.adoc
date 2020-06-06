@@ -2,7 +2,7 @@
 xiayx <xiayouxue@hotmail.com>
 v1.0, 2020-06-06: SNAPSHOT
 :doctype: docbook
-:toc: left
+//:toc: top
 :numbered:
 :imagesdir: docs/assets/images
 :sourcedir: src/main/java
@@ -168,7 +168,7 @@ regionRepository.findAll();
 
 === 实体类映射
 
-**spring r2dbc** 提供了基本地表名和列名映射。
+**spring r2dbc** 提供了基本的表名和列名映射。
 表名通过``@Table("region")``注解指定，列名通过``@Column("name")``注解指定。
 没有注解，默认情况下通过类名和属性名自动转换，转换规则为：驼峰式 -> 下划线分割式。
 
@@ -277,7 +277,7 @@ return entityTemplate.count(Query.query(where), Region.class) // <1>
 <3> 如果总记录数大于 0，则查询分页记录
 <4> 总记录数为 0 时，直接返回空分页对象
 
-== 问题
+== 待解决问题
 
 === SQL 参数展示
 
