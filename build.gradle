@@ -53,8 +53,6 @@ allprojects { project ->
     dependencyManagement {
         imports {
             mavenBom "com.github.peacetrue:peacetrue-dependencies:2+"
-//            mavenBom "org.springframework.boot:spring-boot-dependencies:2+"
-//            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR4"
         }
     }
 

@@ -39,36 +39,11 @@ public class RegionServiceImpl implements RegionService {
     private ApplicationEventPublisher eventPublisher;
 
     public static Criteria buildCriteria(RegionQuery params) {
-        Mono.empty()
-                .switchIfEmpty(Mono.just("1"))
-                .map(value -> value + "1")
-                .doOnNext(System.out::println);
-        /*
-        Criteria criteria = Criteria.empty();
-        if (params.getId() != null) {
-            criteria = criteria.and(Criteria.where("id").in(params.getId()));
-        }
-        if (params.getCode() != null) {
-            criteria = criteria.and(Criteria.where("code").like("%" + params.getCode() + "%"));
-        }
-        */
-        /*
-        List<Criteria> criteriaList = new LinkedList<>();
-        if (params.getId() != null) {
-            criteriaList.add(Criteria.where("id").in(params.getId()));
-        }
-        if (params.getCode() != null) {
-            criteriaList.add(Criteria.where("code").like("%" + params.getCode() + "%"));
-        }
-        Criteria criteria = Criteria.from(criteriaList);
-        */
         return CriteriaUtils.and(
                 CriteriaUtils.nullableCriteria(CriteriaUtils.smartIn("id"), params::getId),
                 CriteriaUtils.nullableCriteria(Criteria.where("code")::like, value -> "%" + value + "%", params::getCode),
                 CriteriaUtils.nullableCriteria(Criteria.where("name")::like, value -> "%" + value + "%", params::getName),
-                CriteriaUtils.nullableCriteria(Criteria.where("parentId")::is, params::getParentId),
-                CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),
-                CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::lessThanOrEquals, value -> DateUtils.ceiling(value, Calendar.SECOND), params.getCreatedTime()::getUpperBound)
+                CriteriaUtils.nullableCriteria(Criteria.where("parentId")::is, params::getParentId)
         );
     }
 

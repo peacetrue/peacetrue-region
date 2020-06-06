@@ -2,7 +2,7 @@
 xiayx <xiayouxue@hotmail.com>
 v1.0, 2020-06-06: SNAPSHOT
 :doctype: docbook
-//:toc: top
+:toc: left
 :numbered:
 :imagesdir: docs/assets/images
 :sourcedir: src/main/java
@@ -229,7 +229,9 @@ if (params.getCode() != null) {
 }
 Criteria criteria = Criteria.from(criteriaList); // <1>
 ----
-<1> 这个地方有坑，重新写了一个替代的方法``CriteriaUtils.and``
+<1> Criteria.from 有坑（Combinator INITIAL not supported ），重新写了一个替代方法``CriteriaUtils.and``
+
+具体坑的原因参考： https://github.com/spring-projects/spring-data-r2dbc/issues/383
 
 === 反应式流
 

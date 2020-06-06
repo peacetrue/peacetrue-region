@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.data.r2dbc.R2dbcTransactionManager
 import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.test.StepVerifier;
@@ -39,9 +38,7 @@ class RegionServiceImplTest {
     private final EasyRandom easyRandom = new EasyRandom();
     private static RegionVO vo;
 
-    //TODO rollback invalid
     @Test
-    @Rollback
     @Order(10)
     void test001Add() {
         RegionAdd params = easyRandom.nextObject(RegionAdd.class);
