@@ -1,0 +1,27 @@
+version: '2'
+
+networks:
+  peacetrue-microservice:
+    external:
+      name: peacetrue-microservice
+
+services:
+  peacetrue-region:
+    container_name: peacetrue-region
+    hostname: peacetrue-region
+#    build: peacetrue-region
+    image: peacetrueopenjdk:latest
+    privileged: true
+    restart: always
+    volumes:
+      - ../peacetrue-region-app/build/libs/peacetrue-region-app-1.0.0-SNAPSHOT.jar:/app.jar
+      - ./logs:/logs
+    expose:
+      - 8600
+    ports:
+      - "8600:8600"
+    networks:
+      - peacetrue-microservice
+    entrypoint: java -jar app.jar ${JAR_ENV}
+# docker-compose down
+# docker-compose up --build -d

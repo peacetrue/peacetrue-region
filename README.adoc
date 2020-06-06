@@ -1,0 +1,291 @@
+= 地区服务
+xiayx <xiayouxue@hotmail.com>
+v1.0, 2020-06-06: SNAPSHOT
+:doctype: docbook
+:toc: left
+:numbered:
+:imagesdir: docs/assets/images
+:sourcedir: src/main/java
+:resourcesdir: src/main/resources
+:testsourcedir: src/test/java
+:source-highlighter: highlightjs
+
+本文介绍如何通过反应式编程开发一个地区的增删改查服务，主要基于 Spring 技术栈实现。
+
+以下是 Reactive Stack 和 Servlet Stack 涉及的不同组件：
+
+image::diagram-reactive.svg[]
+
+== 前言
+
+需要先了解反应式编程的基本概念和 projectreactor 的相关知识。
+
+== 术语
+
+[[选择性查询]]
+=== 选择性查询
+
+有值的时候执行查询条件，没值的时候忽略查询条件。
+
+== 类库介绍
+
+用于反应式编程的类库介绍：
+
+* ``io.projectreactor:reactor-core``：反应式编程基础类库
+* ``io.projectreactor:reactor-test``：反应式编程测试类库
+* ``org.springframework.boot:spring-boot-starter-data-r2dbc``：反应式编程使用的 Spring 资源库层类库
+* ``org.springframework.boot:spring-boot-starter-webflux``：反应式编程使用的 Spring 控制层类库
+* ``io.r2dbc:r2dbc-h2``：反应式编程使用的 H2 数据库驱动
+* ``dev.miku:r2dbc-mysql``：反应式编程使用的 Mysql 数据库驱动
+
+== 源码
+
+因为是一个实际在生产环境中使用的微服务，可以检出代码后参考，缺少必要的环境，无法在本地运行。
+
+源码地址：https://github.com/peacetrue/peacetrue-region。
+
+== 服务接口
+
+[source%nowrap,java]
+----
+/**
+ * 地区服务接口
+ */
+public interface RegionService {
+
+    /** 新增 */
+    Mono<RegionVO> add(RegionAdd params);
+
+    /** 分页查询 */
+    Mono<Page<RegionVO>> query(@Nullable RegionQuery params, @Nullable Pageable pageable);
+
+    /** 全量查询 */
+    Flux<RegionVO> query(@Nullable RegionQuery params, @Nullable Sort sort);
+
+    /** 全量查询 */
+    default Flux<RegionVO> query(@Nullable RegionQuery params) {
+        return this.query(params, (Sort) null);
+    }
+
+    /** 获取 */
+    Mono<RegionVO> get(RegionGet params);
+
+    /** 修改 */
+    Mono<Integer> modify(RegionModify params);
+
+    /** 删除 */
+    Mono<Integer> delete(RegionDelete params);
+}
+----
+
+主要是将返回值全部用``Mono``和``Flux``包装。
+每个方法使用一个单独的参数，以模块名加方法名命名，返回值共用一个 VO。
+
+== 服务实现
+
+服务基于 https://docs.spring.io/spring-data/r2dbc/docs/1.1.0.RELEASE/reference/html/#reference[spring r2dbc^] 实现，
+因为 Spring 已经做了很好的封装，所以实现起来也比较简单，主要简单介绍一下实现逻辑：
+
+[source%nowrap,java]
+----
+/**
+ * 地区服务接口
+ */
+public class RegionServiceImpl implements RegionService{
+
+    /** 新增 */
+    Mono<RegionVO> add(RegionAdd params){
+        //新增参数转实体类
+        //设置默认值
+        //保存实体
+    }
+
+    /** 分页查询 */
+    Mono<Page<RegionVO>> query(@Nullable RegionQuery params, @Nullable Pageable pageable){
+        //设置默认值
+        //查询参数转查询条件
+        //查询总记录数
+        //查询当页记录
+    }
+
+    /** 全量查询 */
+    Flux<RegionVO> query(@Nullable RegionQuery params, @Nullable Sort sort){
+        //设置默认值
+        //查询参数转查询条件
+        //查询集合记录
+    }
+
+    /** 获取 */
+    Mono<RegionVO> get(RegionGet params){ // <1>
+        //查询参数转查询条件
+        //查询单条记录
+    }
+
+    /** 修改 */
+    Mono<Integer> modify(RegionModify params){ // <1> <2>
+        //查询参数转实体类
+        //忽略空值属性
+        //更新剩余有效属性
+    }
+
+    /** 删除 */
+    Mono<Integer> delete(RegionDelete params){ // <1> <2> <3>
+        //查询参数转删除条件
+        //删除记录
+    }
+}
+----
+<1> 涉及到一个选择，操作的记录不存在时是否抛出异常，Spring 没有抛出异常，我这里也没有手动抛出异常，最终是不抛出异常
+<2> 返回受影响的行数，记录不存在就是 0
+<3> 删除仅支持单条删除，不建议支持批量删除
+
+
+以下主要介绍在实际过程中必要的概念和可能会遇到的问题。
+
+=== 操作接口
+
+使用过程中主要涉及以下接口：
+
+DatabaseClient::
+提供基于 SQL 操作的系列接口。
+例如查询地区信息：``DatabaseClient.execute("select * from region")``。
+R2dbcEntityOperations::
+提供基于实体类操作的系列接口，实体类通过接口方法参数指定，可以操作所有实体。
+例如查询地区信息：``R2dbcEntityOperations.select(query, Region.class)``。
+ReactiveCrudRepository::
+提供基于指定实体类操作的系列接口，需要自己提供子类，实体类通过资源库接口的泛化参数指定，只能操作指定实体。
+例如查询地区信息：
+[source%nowrap,java]
+----
+public interface RegionRepository extends ReactiveCrudRepository<Region, Long>{}
+regionRepository.findAll();
+----
+
+以上接口封装级别从低到高排列，后者的实现依赖于前者。
+
+因为``ReactiveCrudRepository``目前没有提供分页查询，也难以实现 <<选择性查询>>，
+所以我这里是使用``R2dbcEntityOperations``实现的，没有使用``ReactiveCrudRepository``。
+
+=== 实体类映射
+
+**spring r2dbc** 提供了基本地表名和列名映射。
+表名通过``@Table("region")``注解指定，列名通过``@Column("name")``注解指定。
+没有注解，默认情况下通过类名和属性名自动转换，转换规则为：驼峰式 -> 下划线分割式。
+
+=== 构造查询条件
+
+查询条件主要涉及到``Criteria``和``Query``两个接口。
+
+构造查询条件基本上都要排除值为空的参数，但接口提供的操作都要求有值，
+判断值是否为空还挺繁琐的，所以我这里自己简单写了相关的工具类。
+
+.带判断的写法
+[source%nowrap,java]
+----
+if (params.getCode() != null) {
+    Criteria.where("code").like("%" + params.getCode() + "%");
+}
+----
+
+.封装后的写法
+[source%nowrap,java]
+----
+CriteriaUtils.nullableCriteria(  // <3>
+    Criteria.where("code")::like,
+    value -> "%" + value + "%", // <2>
+    params::getCode // <1>
+)
+----
+<1> 获取原始值
+<2> 有值时，转换成条件需要的值
+<3> 没值时，直接返回空条件
+
+
+=== 组合查询条件
+
+我们可以一项一项的组合查询条件：
+
+[source%nowrap,java]
+----
+Criteria criteria = Criteria.empty();
+if (params.getId() != null) {
+    criteria = criteria.and(Criteria.where("id").in(params.getId()));
+}
+if (params.getCode() != null) {
+    criteria = criteria.and(Criteria.where("code").like("%" + params.getCode() + "%"));
+}
+----
+
+或者直接组合多项查询条件：
+
+[source%nowrap,java]
+----
+List<Criteria> criteriaList = new LinkedList<>();
+if (params.getId() != null) {
+    criteriaList.add(Criteria.where("id").in(params.getId()));
+}
+if (params.getCode() != null) {
+    criteriaList.add(Criteria.where("code").like("%" + params.getCode() + "%"));
+}
+Criteria criteria = Criteria.from(criteriaList); // <1>
+----
+<1> 这个地方有坑，重新写了一个替代的方法``CriteriaUtils.and``
+
+=== 反应式流
+
+说一下反应式流经常要用的规则。
+
+数据源为空时，所有后续操作都会被忽略：
+
+[source%nowrap,java]
+----
+Mono.empty() // <1>
+    .map(value -> value + "1") // <2>
+    .doOnNext(System.out::println); // <2>
+----
+<1> 数据源为空
+<2> 所有后续操作都被忽略，不会进入到该执行方法
+
+那么我们需要将一个为空的数据源转换为有值，该怎么做呢：
+
+[source%nowrap,java]
+----
+Mono.empty()
+    .switchIfEmpty(Mono.just("1")) // <1>
+    .map(value -> value + "1")
+    .doOnNext(System.out::println);
+----
+<1> 使用``switchIfEmpty``方法
+
+在实现分页查询的时候，需要很好地使用这个规则：
+
+[source%nowrap,java]
+----
+return entityTemplate.count(Query.query(where), Region.class) // <1>
+        .flatMap(total -> total == 0L ? Mono.empty() : Mono.just(total)) // <2>
+        .<Page<RegionVO>>flatMap(total -> { // <3>
+            Query query = Query.query(where).with(finalPageable).sort(finalPageable.getSortOr(Sort.by("code")));
+            return entityTemplate.select(query, Region.class)
+                    .map(item -> BeanUtils.map(item, RegionVO.class))
+                    .reduce(new ArrayList<>(), StreamUtils.reduceToCollection())
+                    .map(item -> new PageImpl<>(item, finalPageable, total));
+        })
+        .switchIfEmpty(Mono.just(new PageImpl<>(Collections.emptyList())));// <4>
+----
+<1> 查询总记录数
+<2> 总记录数为 0 时，转换为空数据源，因为后续不需要再查询分页记录
+<3> 如果总记录数大于 0，则查询分页记录
+<4> 总记录数为 0 时，直接返回空分页对象
+
+== 问题
+
+=== SQL 参数展示
+
+r2dbc 提供带占位符的SQL语句，但占位符的具体值没有提供。
+
+.示例
+[source%nowrap,sql]
+----
+Executing SQL statement [INSERT INTO region (code, name, remark, parent_id) VALUES ($1, $2, $3, $4)]
+----
+

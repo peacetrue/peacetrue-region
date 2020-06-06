@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: peacetrue-region-client
+
+peacetrue:
+  region:
+    url: http://localhost:8080
