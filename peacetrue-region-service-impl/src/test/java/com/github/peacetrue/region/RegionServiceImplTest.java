@@ -40,7 +40,7 @@ class RegionServiceImplTest {
 
     @Test
     @Order(10)
-    void test001Add() {
+    void test001add() {
         RegionAdd params = easyRandom.nextObject(RegionAdd.class);
         regionService.add(params)
                 .as(StepVerifier::create)
@@ -53,7 +53,7 @@ class RegionServiceImplTest {
 
     @Test
     @Order(20)
-    void test002Query() {
+    void test002query() {
         RegionQuery params = BeanUtils.map(vo, RegionQuery.class);
         regionService.query(params, PageRequest.of(0, 10))
                 .as(StepVerifier::create)
@@ -63,7 +63,7 @@ class RegionServiceImplTest {
 
     @Test
     @Order(30)
-    void test003Query() {
+    void test003query() {
         RegionQuery params = BeanUtils.map(vo, RegionQuery.class);
         regionService.query(params)
                 .as(StepVerifier::create)
