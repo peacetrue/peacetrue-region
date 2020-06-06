@@ -42,7 +42,7 @@ image::diagram-reactive.svg[]
 
 因为是一个实际在生产环境中使用的微服务，可以检出代码后参考，缺少必要的环境，无法在本地运行。
 
-源码地址：https://github.com/peacetrue/peacetrue-region。
+源码地址：https://github.com/peacetrue/peacetrue-region 。
 
 == 服务接口
 
