@@ -14,13 +14,4 @@ dependencies {
     testImplementation 'org.springframework.data:spring-data-commons'
     testImplementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     testImplementation 'org.springframework.cloud:spring-cloud-config-client'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    testImplementation 'io.projectreactor:reactor-test'
-    testImplementation 'org.jeasy:easy-random-core:4.2.0'
-    testImplementation 'org.yaml:snakeyaml:1.26'
-    testImplementation 'org.jeasy:easy-random-bean-validation:4.2.0', {
-        exclude('group': 'org.yaml')
-    }
 }

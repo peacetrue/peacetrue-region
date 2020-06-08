@@ -61,15 +61,20 @@ allprojects { project ->
         annotationProcessor "org.projectlombok:lombok"
         implementation "com.google.code.findbugs:jsr305"
 
-        testImplementation "junit:junit"
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+
         testCompileOnly "org.projectlombok:lombok"
         testAnnotationProcessor "org.projectlombok:lombok"
         testImplementation "ch.qos.logback:logback-classic"
         testImplementation 'io.projectreactor:reactor-test'
         testImplementation 'org.unitils:unitils-core'
-        testImplementation 'org.jeasy:easy-random-core:4.2.0'
-        testImplementation 'org.yaml:snakeyaml:1.26'
-        testImplementation 'org.jeasy:easy-random-bean-validation:4.2.0', {
+        testImplementation 'org.jeasy:easy-random-core'
+        testImplementation 'org.yaml:snakeyaml'
+        testImplementation 'org.jeasy:easy-random-bean-validation', {
             exclude('group': 'org.yaml')
         }
     }

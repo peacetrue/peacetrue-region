@@ -64,7 +64,7 @@ public class RegionController {
         return regionService.modify(params);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = {"", "/*"}, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Integer> modifyByJson(@RequestBody RegionModify params) {
         log.info("修改信息(请求方法+JSON参数)[{}]", params);
         return regionService.modify(params);

@@ -60,7 +60,7 @@ public class DataInit {
         private List<Region> areaList;
     }
 
-    @Test
+//    @Test
     void init() throws Exception {
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/2020年1月中华人民共和国县以上行政区划代码.json");
         CollectionType valueType = TypeFactory.defaultInstance().constructCollectionType(ArrayList.class, Province.class);

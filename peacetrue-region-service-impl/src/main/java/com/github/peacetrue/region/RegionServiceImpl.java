@@ -6,7 +6,6 @@ import com.github.peacetrue.spring.data.relational.core.query.UpdateUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
 import com.github.peacetrue.util.StreamUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.PayloadApplicationEvent;
@@ -22,7 +21,6 @@ import reactor.util.function.Tuple2;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 
 /**
@@ -66,7 +64,9 @@ public class RegionServiceImpl implements RegionService {
         Criteria where = buildCriteria(params);
 
         return entityTemplate.count(Query.query(where), Region.class)
+                .checkpoint("查询总记录数")
                 .flatMap(total -> total == 0L ? Mono.empty() : Mono.just(total))
+                .checkpoint("如果总记录数为0，转换为空")
                 .<Page<RegionVO>>flatMap(total -> {
                     Query query = Query.query(where).with(finalPageable).sort(finalPageable.getSortOr(Sort.by("code")));
                     return entityTemplate.select(query, Region.class)
@@ -74,6 +74,7 @@ public class RegionServiceImpl implements RegionService {
                             .reduce(new ArrayList<>(), StreamUtils.reduceToCollection())
                             .map(item -> new PageImpl<>(item, finalPageable, total));
                 })
+                .checkpoint("如果总记录数大于0，查询分页记录")
                 .switchIfEmpty(Mono.just(new PageImpl<>(Collections.emptyList())));
     }
 

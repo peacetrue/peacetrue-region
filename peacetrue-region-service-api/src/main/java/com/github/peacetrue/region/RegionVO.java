@@ -1,7 +1,6 @@
 package com.github.peacetrue.region;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -9,8 +8,7 @@ import java.io.Serializable;
 /**
  * @author xiayx
  */
-@Getter
-@Setter
+@Data
 @ToString
 public class RegionVO implements Serializable {
 

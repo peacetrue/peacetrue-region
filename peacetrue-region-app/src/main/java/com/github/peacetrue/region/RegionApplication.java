@@ -26,28 +26,6 @@ public class RegionApplication {
         SpringApplication.run(RegionApplication.class, args);
     }
 
-    @Bean
-    public ReactivePageableHandlerMethodArgumentResolver reactivePageableHandlerMethodArgumentResolver() {
-        return new ReactivePageableHandlerMethodArgumentResolver();
-    }
-
-    @Bean
-    public ReactiveSortHandlerMethodArgumentResolver reactiveSortHandlerMethodArgumentResolver() {
-        return new ReactiveSortHandlerMethodArgumentResolver();
-    }
-
-    @Bean
-    public AutomaticDateFormatter dateFormatter() {
-        return new AutomaticDateFormatter();
-    }
-
-    @ControllerAdvice
-    public static class StringTrimmerControllerAdvice {
-        @InitBinder
-        public void registerCustomEditors(WebDataBinder binder) {
-            binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-        }
-    }
 
     @EnableWebFluxSecurity
     public static class SecurityConfig {

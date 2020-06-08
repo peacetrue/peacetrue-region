@@ -6,9 +6,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.data:spring-data-commons"
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test', {
-        exclude group: 'com.vaadin.external.google', module: 'android-json'
-    }
     testImplementation project(':peacetrue-region-service-impl')
-    testImplementation(testFixtures(project(':peacetrue-region-service-impl')))
+    testImplementation project(path: ':peacetrue-region-service-impl', configuration: 'testArtifacts')
 }

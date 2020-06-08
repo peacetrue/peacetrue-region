@@ -1,8 +1,17 @@
-plugins {
-    id "java-test-fixtures"
+description '地区服务r2dbc实现'
+
+configurations {
+    testArtifacts.extendsFrom testRuntime, testImplementation
 }
 
-description '地区服务r2dbc实现'
+task testJar(type: Jar) {
+    archiveClassifier = 'test'
+    from sourceSets.test.output
+}
+
+artifacts {
+    testArtifacts testJar
+}
 
 dependencies {
 
@@ -15,19 +24,6 @@ dependencies {
     compileOnly "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'io.r2dbc:r2dbc-h2'
     testImplementation 'com.h2database:h2'
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.unitils:unitils-core'
-    testImplementation 'org.jeasy:easy-random-core:4.2.0'
-    testImplementation 'org.yaml:snakeyaml:1.26'
-    testImplementation 'org.jeasy:easy-random-bean-validation:4.2.0', {
-        exclude('group': 'org.yaml')
-    }
-
 }

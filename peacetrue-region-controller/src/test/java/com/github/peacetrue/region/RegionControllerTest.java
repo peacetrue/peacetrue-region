@@ -1,0 +1,101 @@
+package com.github.peacetrue.region;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.function.Consumer;
+
+/**
+ * @author xiayx
+ */
+@SpringBootTest(classes = TestControllerRegionAutoConfiguration.class)
+@AutoConfigureWebTestClient
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class RegionControllerTest {
+
+    @Autowired
+    private WebTestClient client;
+
+    @Test
+    @Order(10)
+    public void add() {
+        this.client.post().uri("/regions?page=0")
+                .bodyValue(RegionServiceImplTestAutoConfiguration.ADD)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(RegionVO.class).value((Consumer<RegionVO>) vo -> RegionServiceImplTestAutoConfiguration.vo = vo);
+    }
+
+    @Test
+    @Order(20)
+    public void queryForPage() {
+        this.client.get()
+                .uri("/regions?page=0")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().jsonPath("$.totalElements").isEqualTo(1);
+    }
+
+    @Test
+    @Order(30)
+    public void queryForList() {
+        this.client.get()
+                .uri("/regions")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody().jsonPath("$.size()").isEqualTo(1);
+    }
+
+    @Test
+    @Order(40)
+    public void get() {
+        this.client.get()
+                .uri("/regions/{0}", RegionServiceImplTestAutoConfiguration.vo.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(RegionVO.class).isEqualTo(RegionServiceImplTestAutoConfiguration.vo);
+    }
+
+
+    @Test
+    @Order(50)
+    public void modify() {
+        RegionModify modify = RegionServiceImplTestAutoConfiguration.MODIFY;
+        modify.setId(RegionServiceImplTestAutoConfiguration.vo.getId());
+        this.client.put()
+                .uri("/regions/{id}", RegionServiceImplTestAutoConfiguration.vo.getId())
+                .bodyValue(modify)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Long.class).isEqualTo(1L);
+    }
+
+    @Test
+    @Order(60)
+    public void delete() {
+        this.client.delete()
+                .uri("/regions/{0}", RegionServiceImplTestAutoConfiguration.vo.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Long.class).isEqualTo(1L);
+    }
+}

@@ -31,13 +31,4 @@ dependencies {
     implementation 'com.nimbusds:oauth2-oidc-sdk:7+'
 
     testImplementation 'org.springframework.security:spring-security-oauth2-client'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    testImplementation 'io.projectreactor:reactor-test'
-    testImplementation 'org.jeasy:easy-random-core:4.2.0'
-    testImplementation 'org.yaml:snakeyaml:1.26'
-    testImplementation 'org.jeasy:easy-random-bean-validation:4.2.0', {
-        exclude('group': 'org.yaml')
-    }
 }
