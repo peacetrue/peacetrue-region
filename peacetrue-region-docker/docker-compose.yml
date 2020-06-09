@@ -12,14 +12,14 @@ services:
 #    build: peacetrue-region
     image: peacetrueopenjdk:latest
     privileged: true
-    restart: always
+    restart: unless-stopped
     volumes:
       - ../peacetrue-region-app/build/libs/peacetrue-region-app-1.0.0-SNAPSHOT.jar:/app.jar
       - ./logs:/logs
     expose:
-      - 8600
+      - ${PORT}
     ports:
-      - "8600:8600"
+      - ${PORT}:${PORT}
     networks:
       - peacetrue-microservice
     entrypoint: java -jar app.jar ${JAR_ENV}

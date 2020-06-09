@@ -1,9 +1,10 @@
 #!/bin/bash
 
 echo "1. gradle bootJar"
-gradle bootJar
+#./gradlew clear
+#./gradlew bootJar
 
-cd peacetrue-peacetrue-region-docker
+cd peacetrue-region-docker || exit
 
 echo "2. docker-compose down"
 docker-compose down
