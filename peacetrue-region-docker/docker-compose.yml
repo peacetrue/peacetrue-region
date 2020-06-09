@@ -7,12 +7,15 @@ networks:
 
 services:
   peacetrue-region:
+    environment:
+      MICROSERVICE_SECURITY_PASSWORD: ${MICROSERVICE_SECURITY_PASSWORD}
+      MICROSERVICE_SSL_PASSWORD: ${MICROSERVICE_SSL_PASSWORD}
     container_name: peacetrue-region
     hostname: peacetrue-region
-#    build: peacetrue-region
+    #    build: peacetrue-region
     image: peacetrueopenjdk:latest
     privileged: true
-    restart: unless-stopped
+#    restart: unless-stopped
     volumes:
       - ../peacetrue-region-app/build/libs/peacetrue-region-app-1.0.0-SNAPSHOT.jar:/app.jar
       - ./logs:/logs
@@ -25,3 +28,4 @@ services:
     entrypoint: java -jar app.jar ${JAR_ENV}
 # docker-compose down
 # docker-compose up --build -d
+# docker-compose config
