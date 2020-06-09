@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import javax.annotation.Nullable;
 import java.util.List;
 
-@FeignClient(name = "peacetrue-region", url = "${peacetrue.region.url:peacetrue-region}")
+@FeignClient(name = "peacetrue-region")
 public interface RegionServiceClient {
 
     @PostMapping(value = "/regions")
