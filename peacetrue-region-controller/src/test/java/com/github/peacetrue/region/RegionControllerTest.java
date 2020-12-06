@@ -26,13 +26,13 @@ public class RegionControllerTest {
     @Test
     @Order(10)
     public void add() {
-        this.client.post().uri("/regions?page=0")
-                .bodyValue(RegionServiceImplTestAutoConfiguration.ADD)
+        this.client.post().uri("/regions")
+                .bodyValue(RegionServiceImplTest.ADD)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(RegionVO.class).value((Consumer<RegionVO>) vo -> RegionServiceImplTestAutoConfiguration.vo = vo);
+                .expectBody(RegionVO.class).value((Consumer<RegionVO>) vo -> RegionServiceImplTest.vo = vo);
     }
 
     @Test
@@ -63,39 +63,40 @@ public class RegionControllerTest {
     @Order(40)
     public void get() {
         this.client.get()
-                .uri("/regions/{0}", RegionServiceImplTestAutoConfiguration.vo.getId())
+                .uri("/regions/{0}", RegionServiceImplTest.vo.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(RegionVO.class).isEqualTo(RegionServiceImplTestAutoConfiguration.vo);
+                .expectBody(RegionVO.class).isEqualTo(RegionServiceImplTest.vo);
     }
 
 
     @Test
     @Order(50)
     public void modify() {
-        RegionModify modify = RegionServiceImplTestAutoConfiguration.MODIFY;
-        modify.setId(RegionServiceImplTestAutoConfiguration.vo.getId());
+        RegionModify modify = RegionServiceImplTest.MODIFY;
+        modify.setId(RegionServiceImplTest.vo.getId());
         this.client.put()
-                .uri("/regions/{id}", RegionServiceImplTestAutoConfiguration.vo.getId())
+                .uri("/regions/{id}", RegionServiceImplTest.vo.getId())
                 .bodyValue(modify)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(Long.class).isEqualTo(1L);
+                .expectBody(Integer.class).isEqualTo(1);
     }
 
     @Test
     @Order(60)
     public void delete() {
         this.client.delete()
-                .uri("/regions/{0}", RegionServiceImplTestAutoConfiguration.vo.getId())
+                .uri("/regions/{0}", RegionServiceImplTest.vo.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(Long.class).isEqualTo(1L);
+                .expectBody(Integer.class).isEqualTo(1);
     }
+
 }

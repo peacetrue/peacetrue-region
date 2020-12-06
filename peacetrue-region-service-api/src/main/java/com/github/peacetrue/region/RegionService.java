@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
  */
 public interface RegionService {
 
+    Long ROOT_ID = 1L;
+
     /** 新增 */
     Mono<RegionVO> add(RegionAdd params);
 
@@ -22,10 +24,10 @@ public interface RegionService {
     Mono<Page<RegionVO>> query(@Nullable RegionQuery params, @Nullable Pageable pageable, String... projection);
 
     /** 全量查询 */
-    Flux<RegionVO> query(@Nullable RegionQuery params, @Nullable Sort sort, String... projection);
+    Flux<RegionVO> query(RegionQuery params, @Nullable Sort sort, String... projection);
 
     /** 全量查询 */
-    default Flux<RegionVO> query(@Nullable RegionQuery params, String... projection) {
+    default Flux<RegionVO> query(RegionQuery params, String... projection) {
         return this.query(params, (Sort) null, projection);
     }
 
@@ -37,4 +39,5 @@ public interface RegionService {
 
     /** 删除 */
     Mono<Integer> delete(RegionDelete params);
+
 }

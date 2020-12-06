@@ -1,38 +1,46 @@
 package com.github.peacetrue.region;
 
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import reactivefeign.spring.config.ReactiveFeignClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
-@FeignClient(name = "peacetrue-region")
+/**
+ * 地区客户端
+ *
+ * @author xiayx
+ */
+@ReactiveFeignClient(name = "peacetrue-region", url = "${peacetrue.Region.url:${peacetrue.server.url:}}")
 public interface RegionServiceClient {
 
     @PostMapping(value = "/regions")
-    RegionVO add(RegionAdd params);
+    Mono<RegionVO> add(RegionAdd params);
 
     @GetMapping(value = "/regions", params = "page")
-    Page<RegionVO> query(@Nullable @SpringQueryMap RegionQuery params, Pageable pageable, @SpringQueryMap String... projection);
+    Mono<Page<RegionVO>> query(@Nullable @SpringQueryMap RegionQuery params, @Nullable Pageable pageable, @SpringQueryMap String... projection);
 
     @GetMapping(value = "/regions", params = "sort")
-    List<RegionVO> query(@SpringQueryMap RegionQuery params, Sort sort, @SpringQueryMap String... projection);
+    Flux<RegionVO> query(@SpringQueryMap RegionQuery params, Sort sort, @SpringQueryMap String... projection);
 
     @GetMapping(value = "/regions")
-    List<RegionVO> query(@SpringQueryMap RegionQuery params, @SpringQueryMap String... projection);
+    Flux<RegionVO> query(@SpringQueryMap RegionQuery params, @SpringQueryMap String... projection);
 
     @GetMapping(value = "/regions/get")
-    RegionVO get(@SpringQueryMap RegionGet params, @SpringQueryMap String... projection);
+    Mono<RegionVO> get(@SpringQueryMap RegionGet params, @SpringQueryMap String... projection);
 
     @PutMapping(value = "/regions")
-    Integer modify(RegionModify params);
+    Mono<Integer> modify(RegionModify params);
 
-    @GetMapping(value = "/regions/delete")
-    Integer delete(@SpringQueryMap RegionDelete params);
+    @DeleteMapping(value = "/regions/delete")
+    Mono<Integer> delete(@SpringQueryMap RegionDelete params);
+
 }

@@ -25,10 +25,10 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class RegionServiceClientTest {
 
+    private static RegionVO vo;
+    private final EasyRandom easyRandom = new EasyRandom();
     @Autowired
     private RegionServiceClient regionServiceClient;
-    private final EasyRandom easyRandom = new EasyRandom();
-    private static RegionVO vo;
 
     @Test
     void test010add() {

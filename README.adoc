@@ -78,13 +78,11 @@ public interface RegionService {
 }
 ----
 
-主要是将返回值全部用``Mono``和``Flux``包装。
-每个方法使用一个单独的参数，以模块名加方法名命名，返回值共用一个 VO。
+主要是将返回值全部用``Mono``和``Flux``包装。 每个方法使用一个单独的参数，以模块名加方法名命名，返回值共用一个 VO。
 
 == 服务实现
 
-服务基于 https://docs.spring.io/spring-data/r2dbc/docs/1.1.0.RELEASE/reference/html/#reference[spring r2dbc^] 实现，
-因为 Spring 已经做了很好的封装，所以实现起来也比较简单，主要简单介绍一下实现逻辑：
+服务基于 https://docs.spring.io/spring-data/r2dbc/docs/1.1.0.RELEASE/reference/html/#reference[spring r2dbc^] 实现， 因为 Spring 已经做了很好的封装，所以实现起来也比较简单，主要简单介绍一下实现逻辑：
 
 [source%nowrap,java]
 ----
@@ -147,14 +145,12 @@ public class RegionServiceImpl implements RegionService{
 使用过程中主要涉及以下接口：
 
 DatabaseClient::
-提供基于 SQL 操作的系列接口。
-例如查询地区信息：``DatabaseClient.execute("select * from region")``。
+提供基于 SQL 操作的系列接口。 例如查询地区信息：``DatabaseClient.execute("select * from region")``。
 R2dbcEntityOperations::
-提供基于实体类操作的系列接口，实体类通过接口方法参数指定，可以操作所有实体。
-例如查询地区信息：``R2dbcEntityOperations.select(query, Region.class)``。
+提供基于实体类操作的系列接口，实体类通过接口方法参数指定，可以操作所有实体。 例如查询地区信息：``R2dbcEntityOperations.select(query, Region.class)``。
 ReactiveCrudRepository::
-提供基于指定实体类操作的系列接口，需要自己提供子类，实体类通过资源库接口的泛化参数指定，只能操作指定实体。
-例如查询地区信息：
+提供基于指定实体类操作的系列接口，需要自己提供子类，实体类通过资源库接口的泛化参数指定，只能操作指定实体。 例如查询地区信息：
+
 [source%nowrap,java]
 ----
 public interface RegionRepository extends ReactiveCrudRepository<Region, Long>{}
@@ -163,21 +159,17 @@ regionRepository.findAll();
 
 以上接口封装级别从低到高排列，后者的实现依赖于前者。
 
-因为``ReactiveCrudRepository``目前没有提供分页查询，也难以实现 <<选择性查询>>，
-所以我这里是使用``R2dbcEntityOperations``实现的，没有使用``ReactiveCrudRepository``。
+因为``ReactiveCrudRepository``目前没有提供分页查询，也难以实现 <<选择性查询>>， 所以我这里是使用``R2dbcEntityOperations``实现的，没有使用``ReactiveCrudRepository``。
 
 === 实体类映射
 
-**spring r2dbc** 提供了基本的表名和列名映射。
-表名通过``@Table("region")``注解指定，列名通过``@Column("name")``注解指定。
-没有注解，默认情况下通过类名和属性名自动转换，转换规则为：驼峰式 -> 下划线分割式。
+**spring r2dbc** 提供了基本的表名和列名映射。 表名通过``@Table("region")``注解指定，列名通过``@Column("name")``注解指定。 没有注解，默认情况下通过类名和属性名自动转换，转换规则为：驼峰式 -> 下划线分割式。
 
 === 构造查询条件
 
 查询条件主要涉及到``Criteria``和``Query``两个接口。
 
-构造查询条件基本上都要排除值为空的参数，但接口提供的操作都要求有值，
-判断值是否为空还挺繁琐的，所以我这里自己简单写了相关的工具类。
+构造查询条件基本上都要排除值为空的参数，但接口提供的操作都要求有值， 判断值是否为空还挺繁琐的，所以我这里自己简单写了相关的工具类。
 
 .带判断的写法
 [source%nowrap,java]
@@ -199,7 +191,6 @@ CriteriaUtils.nullableCriteria(  // <3>
 <1> 获取原始值
 <2> 有值时，转换成条件需要的值
 <3> 没值时，直接返回空条件
-
 
 === 组合查询条件
 

@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @Configuration
 @ImportAutoConfiguration(classes = {
-        RegionServiceImplTestAutoConfiguration.class,
+        TestServiceRegionAutoConfiguration.class,
         WebMvcAutoConfiguration.class,
         HttpMessageConvertersAutoConfiguration.class,
         ControllerRegionAutoConfiguration.class,

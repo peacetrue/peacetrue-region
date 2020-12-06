@@ -15,9 +15,10 @@ artifacts {
 
 dependencies {
 
-    api project(":peacetrue-region-service-api")
     api 'org.slf4j:slf4j-api'
+    api project(":peacetrue-region-service-api")
     implementation 'com.github.peacetrue:peacetrue-spring'
+    implementation 'com.github.peacetrue:peacetrue-result'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation "org.springframework.boot:spring-boot-autoconfigure"

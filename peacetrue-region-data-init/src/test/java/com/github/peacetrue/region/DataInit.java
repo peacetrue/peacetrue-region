@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.github.peacetrue.spring.util.BeanUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,7 +15,6 @@ import org.springframework.boot.autoconfigure.data.r2dbc.R2dbcTransactionManager
 import org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,26 +39,7 @@ public class DataInit {
     private RegionService regionService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Getter
-    @Setter
-    public static class Region {
-        private String code;
-        private String name;
-    }
-
-    @Getter
-    @Setter
-    public static class Province extends Region {
-        private List<City> cityList;
-    }
-
-    @Getter
-    @Setter
-    public static class City extends Region {
-        private List<Region> areaList;
-    }
-
-//    @Test
+    //    @Test
     void init() throws Exception {
         InputStream resourceAsStream = this.getClass().getResourceAsStream("/2020年1月中华人民共和国县以上行政区划代码.json");
         CollectionType valueType = TypeFactory.defaultInstance().constructCollectionType(ArrayList.class, Province.class);
@@ -81,5 +60,24 @@ public class DataInit {
                 }
             }
         }
+    }
+
+    @Getter
+    @Setter
+    public static class Region {
+        private String code;
+        private String name;
+    }
+
+    @Getter
+    @Setter
+    public static class Province extends Region {
+        private List<City> cityList;
+    }
+
+    @Getter
+    @Setter
+    public static class City extends Region {
+        private List<Region> areaList;
     }
 }

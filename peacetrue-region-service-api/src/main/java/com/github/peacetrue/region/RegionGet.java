@@ -1,8 +1,9 @@
 package com.github.peacetrue.region;
 
 import com.github.peacetrue.core.OperatorCapableImpl;
-import com.github.peacetrue.validation.constraints.multinotnull.MultiNotNull;
 import lombok.*;
+
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -13,15 +14,15 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@MultiNotNull
-public class RegionGet extends OperatorCapableImpl<String> {
+public class RegionGet extends OperatorCapableImpl<Long> {
 
     private static final long serialVersionUID = 0L;
 
+    @NotNull
     private Long id;
-    private String code;
+    private Boolean leaf;
 
-    public RegionGet(Long id) {
+    public RegionGet(@NotNull Long id) {
         this.id = id;
     }
 }

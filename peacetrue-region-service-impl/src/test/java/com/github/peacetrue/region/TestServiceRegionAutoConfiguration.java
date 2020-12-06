@@ -1,7 +1,6 @@
 package com.github.peacetrue.region;
 
 import io.r2dbc.spi.ConnectionFactory;
-import org.jeasy.random.EasyRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -25,24 +24,13 @@ import org.springframework.test.context.ActiveProfiles;
 })
 @EnableAutoConfiguration
 @ActiveProfiles("region-service-test")
-public class RegionServiceImplTestAutoConfiguration {
-
-    public static final EasyRandom EASY_RANDOM = new EasyRandom();
-    public static final RegionAdd ADD = EASY_RANDOM.nextObject(RegionAdd.class);
-    public static final RegionModify MODIFY = EASY_RANDOM.nextObject(RegionModify.class);
-
-    static {
-        ADD.setOperatorId(EASY_RANDOM.nextObject(String.class));
-        MODIFY.setOperatorId(EASY_RANDOM.nextObject(String.class));
-    }
-
-    public static RegionVO vo;
+public class TestServiceRegionAutoConfiguration {
 
     @Autowired
     public void initializeDatabase(ConnectionFactory connectionFactory) {
         ResourceLoader resourceLoader = new DefaultResourceLoader();
         Resource[] scripts = new Resource[]{
-                resourceLoader.getResource("classpath:schema.sql"),
+                resourceLoader.getResource("classpath:schema-h2.sql"),
 //                resourceLoader.getResource("classpath:data.sql")
         };
         new ResourceDatabasePopulator(scripts).execute(connectionFactory).block();

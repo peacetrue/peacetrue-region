@@ -34,34 +34,34 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-	@Bean
-	WebClient webClient(ReactiveOAuth2AuthorizedClientManager authorizedClientManager) {
-		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth =
-				new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
-		oauth.setDefaultOAuth2AuthorizedClient(true);
-		return WebClient.builder()
-				.baseUrl("http://localhost/regions")
-				.filter(oauth)
-				.build();
-	}
+    @Bean
+    WebClient webClient(ReactiveOAuth2AuthorizedClientManager authorizedClientManager) {
+        ServerOAuth2AuthorizedClientExchangeFilterFunction oauth =
+                new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
+        oauth.setDefaultOAuth2AuthorizedClient(true);
+        return WebClient.builder()
+                .baseUrl("http://localhost/regions")
+                .filter(oauth)
+                .build();
+    }
 
-	@Bean
+    @Bean
     ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
-			ReactiveClientRegistrationRepository clientRegistrationRepository,
-			ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
+            ReactiveClientRegistrationRepository clientRegistrationRepository,
+            ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
 
-		ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
-				ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
-						.authorizationCode()
-						.refreshToken()
-						.clientCredentials()
-						.password()
-						.build();
-		DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager =
-				new DefaultReactiveOAuth2AuthorizedClientManager(
-						clientRegistrationRepository, authorizedClientRepository);
-		authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+        ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider =
+                ReactiveOAuth2AuthorizedClientProviderBuilder.builder()
+                        .authorizationCode()
+                        .refreshToken()
+                        .clientCredentials()
+                        .password()
+                        .build();
+        DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager =
+                new DefaultReactiveOAuth2AuthorizedClientManager(
+                        clientRegistrationRepository, authorizedClientRepository);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
-		return authorizedClientManager;
-	}
+        return authorizedClientManager;
+    }
 }

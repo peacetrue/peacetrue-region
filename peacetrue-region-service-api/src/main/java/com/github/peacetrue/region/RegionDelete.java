@@ -6,7 +6,6 @@ import lombok.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-
 /**
  * @author xiayx
  */
@@ -15,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegionDelete extends OperatorCapableImpl<String> {
+public class RegionDelete extends OperatorCapableImpl<Long> {
 
     private static final long serialVersionUID = 0L;
 
